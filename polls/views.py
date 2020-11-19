@@ -6,7 +6,7 @@ from .models import Tweet
 
 @login_required
 def tweets(request):
-    tweets = Tweet.objects.all()
+    tweets = Tweet.objects.all().order_by('-created_at')
     return render(request, "index.html", { "tweets": tweets })
 
 def tw_login(request):
@@ -20,3 +20,11 @@ def tw_login(request):
             login(request, user)
             return redirect('home')
     return render(request, "login.html")
+
+@login_required
+def submit_tweet(request):
+    if request.method == "POST":
+        tweet = request.POST["tweet"]
+        new_tweet = Tweet.objects.create(tweet=tweet)
+        return redirect('home')
+    return redirect('home')
